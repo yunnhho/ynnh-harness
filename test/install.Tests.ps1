@@ -97,6 +97,15 @@ Describe 'install.ps1' {
         Test-Path $NpxLog | Should Be $false
     }
 
+    It 'refuses TrimOnly with DryRun and moves nothing' {
+        $h = New-Home 'trimdry'
+        New-Item -ItemType Directory -Force (Join-Path $h 'rules\ecc\golang') | Out-Null
+        Invoke-Install $h -Flags @('-TrimOnly') -DryRun
+        $LASTEXITCODE | Should Be 1
+        Test-Path (Join-Path $h 'rules\ecc\golang') | Should Be $true
+        Test-Path (Join-Path $h 'backups') | Should Be $false
+    }
+
     It 'trim twice does not nest or fail' {
         $h = New-Home 'trim'
         foreach ($d in 'rules\ecc\common', 'rules\ecc\golang', 'skills\react-hooks', 'skills\nestjs-patterns', 'agents') {

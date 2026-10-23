@@ -58,6 +58,11 @@ if (-not $SkipEcc -and -not $TrimOnly -and $target -ne $realHome) {
     exit 1
 }
 
+if ($TrimOnly -and ($DryRun -or $target -eq $realHome)) {
+    Write-Host '중단: -TrimOnly는 테스트 전용이다. -DryRun과 함께 쓰거나 실제 ~/.claude 에 쓸 수 없다.' -ForegroundColor Red
+    exit 1
+}
+
 function Invoke-EccTrim {
     Move-Unkept (Join-Path $ClaudeHome 'rules\ecc') $KeepRules (Join-Path $EccTrim 'rules')
     Move-Unkept (Join-Path $ClaudeHome 'skills') ($KeepSkills + 'react-*') (Join-Path $EccTrim 'skills')
@@ -86,6 +91,10 @@ if (-not $SkipEcc) {
 }
 
 # 4. Copy package files
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+    Write-Host '중단: node 를 찾을 수 없다. node(npx 포함)를 설치한 뒤 다시 실행한다.' -ForegroundColor Red
+    exit 1
+}
 $hookPath = Join-Path $ClaudeHome 'hooks\block-dangerous.js'
 $copies = [ordered]@{
     'CLAUDE.md'                 = Join-Path $ClaudeHome 'CLAUDE.md'

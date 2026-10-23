@@ -13,7 +13,7 @@ Claude Code 개인 설정 묶음. Java 17 / Spring Boot 3, TypeScript, React 기
 | `install.ps1` | 위 항목 설치, ECC 설치·정리, MCP 등록 |
 
 ## 사전 요구
-node(npx 포함), git, Claude Code(`claude` 명령).
+node(npx 포함), git, Claude Code(`claude` 명령) v2.1.295 이상 (hook의 `args`/`onFailure`가 필요하다. 낮은 버전이면 hook이 조용히 통과된다).
 
 ## 설치
 머신 정책이 스크립트 실행을 막으므로 반드시 아래 형식으로 실행한다.
@@ -36,6 +36,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File install.ps1
 
 ## 되돌리기
 - 기존 설정: `~/.claude\backups\pre-harness-<시각>\`의 항목(CLAUDE.md, settings.json, rules, agents, hooks)을 `~/.claude`로 복사해 원복.
+- 백업 복원 뒤 하네스가 새로 추가한 `rules\override.md`와 `hooksblock-dangerous.js`도 삭제한다 (설치 전 백업에 없다).
 - ECC에서 정리된 항목: `~/.claude\backups\ecc-trim-<시각>\`.
 
 ## 주의
@@ -59,6 +60,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-Pester test\insta
 - [ ] 6개 파일 변경 후 리뷰 요청 -> 에이전트 호출
 - [ ] `cat .env` 요청 거부
 - [ ] 위험 삭제 명령이 hook으로 차단
+- [ ] `hooksblock-dangerous.js`를 잠시 다른 곳으로 옮긴 상태에서 Bash 명령이 차단되는지
 - [ ] `/agents`에서 모델 표시 확인
 
 실패 시 설계 3절대로 플러그인 hook 조정을 새 작업으로 올린다.

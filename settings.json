@@ -1,7 +1,7 @@
 {
   "model": "opus",
   "env": {
-    "ECC_DISABLED_HOOKS": "pre:observe:continuous-learning,pre:write:doc-file-warning,pre:edit-write:gateguard-fact-force",
+    "ECC_DISABLED_HOOKS": "pre:observe:continuous-learning,pre:write:doc-file-warning,pre:edit-write:gateguard-fact-force,session:start,pre:compact,stop:session-end",
     "GATEGUARD_BASH_ROUTINE_DISABLED": "1",
     "ECC_CONTEXT_MONITOR_COST_WARNINGS": "off"
   },

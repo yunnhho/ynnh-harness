@@ -51,8 +51,8 @@ if (Test-Path (Join-Path $ClaudeHome 'rules\ecc\csharp')) {
     exit 1
 }
 
-$realHome = [IO.Path]::GetFullPath((Join-Path $HOME '.claude')).TrimEnd('')
-$target = [IO.Path]::GetFullPath($ClaudeHome).TrimEnd('')
+$realHome = [IO.Path]::GetFullPath((Join-Path $HOME '.claude')).TrimEnd('\')
+$target = [IO.Path]::GetFullPath($ClaudeHome).TrimEnd('\')
 if (-not $SkipEcc -and -not $TrimOnly -and $target -ne $realHome) {
     Write-Host "중단: npx ecc / claude mcp 는 항상 $realHome 을 바꾼다. 다른 -ClaudeHome 에는 -SkipEcc 를 같이 줘야 한다." -ForegroundColor Red
     exit 1

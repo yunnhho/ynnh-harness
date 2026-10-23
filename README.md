@@ -36,7 +36,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File install.ps1
 
 ## 되돌리기
 - 기존 설정: `~/.claude\backups\pre-harness-<시각>\`의 항목(CLAUDE.md, settings.json, rules, agents, hooks)을 `~/.claude`로 복사해 원복.
-- 백업 복원 뒤 하네스가 새로 추가한 `rules\override.md`와 `hooksblock-dangerous.js`도 삭제한다 (설치 전 백업에 없다).
+- 백업 복원 뒤 하네스가 새로 추가한 `rules\override.md`와 `hooks\block-dangerous.js`도 삭제한다 (설치 전 백업에 없다).
 - ECC에서 정리된 항목: `~/.claude\backups\ecc-trim-<시각>\`.
 
 ## 주의
@@ -60,7 +60,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-Pester test\insta
 - [ ] 6개 파일 변경 후 리뷰 요청 -> 에이전트 호출
 - [ ] `cat .env` 요청 거부
 - [ ] 위험 삭제 명령이 hook으로 차단
-- [ ] `hooksblock-dangerous.js`를 잠시 다른 곳으로 옮긴 상태에서 Bash 명령이 차단되는지
+- [ ] `hooks\block-dangerous.js`를 잠시 다른 곳으로 옮긴 상태에서 Bash 명령이 차단되는지
 - [ ] `/agents`에서 모델 표시 확인
 
 실패 시 설계 3절대로 플러그인 hook 조정을 새 작업으로 올린다.

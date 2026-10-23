@@ -1,0 +1,21 @@
+{
+  "stackLine": "> 스택: Java 17 / Spring Boot 3, TypeScript, React. 이 기준으로 판단한다.",
+  "models": {
+    "planner": "opus",
+    "architect": "opus",
+    "security-reviewer": "opus",
+    "code-reviewer": "sonnet",
+    "java-reviewer": "sonnet",
+    "typescript-reviewer": "sonnet",
+    "react-reviewer": "sonnet",
+    "database-reviewer": "sonnet",
+    "java-build-resolver": "sonnet",
+    "react-build-resolver": "sonnet",
+    "build-error-resolver": "sonnet",
+    "silent-failure-hunter": "sonnet",
+    "tdd-guide": "sonnet",
+    "code-explorer": "haiku",
+    "doc-updater": "haiku",
+    "refactor-cleaner": "haiku"
+  }
+}

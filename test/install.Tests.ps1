@@ -1,7 +1,7 @@
 $script = Join-Path (Split-Path -Parent $PSScriptRoot) 'install.ps1'
 
-function Invoke-Install([string]$home_, [switch]$DryRun) {
-    $a = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $script, '-ClaudeHome', $home_, '-SkipEcc')
+function Invoke-Install([string]$home_, [switch]$DryRun, [string[]]$Flags = @('-SkipEcc')) {
+    $a = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $script, '-ClaudeHome', $home_) + $Flags
     if ($DryRun) { $a += '-DryRun' }
     & powershell @a | Out-Null
 }
@@ -56,5 +56,37 @@ Describe 'install.ps1' {
         foreach ($f in 'CLAUDE.md', 'rules\override.md', 'rules\ecc\common\agents.md', 'hooks\block-dangerous.js') {
             Test-Path (Join-Path $h $f) | Should Be $true
         }
+    }
+
+    It 'refuses non-default home without SkipEcc' {
+        $h = New-Home 'noskip'
+        Invoke-Install $h -Flags @()
+        $LASTEXITCODE | Should Be 1
+        @(Get-ChildItem $h).Count | Should Be 0
+    }
+
+    It 'trim twice does not nest or fail' {
+        $h = New-Home 'trim'
+        foreach ($d in 'rules\ecc\common', 'rules\ecc\golang', 'skills\react-hooks', 'skills\nestjs-patterns', 'agents') {
+            New-Item -ItemType Directory -Force (Join-Path $h $d) | Out-Null
+        }
+        Set-Content (Join-Path $h 'agents\go-reviewer.md') 'x'
+        Invoke-Install $h -Flags @('-TrimOnly')
+        $LASTEXITCODE | Should Be 0
+        foreach ($d in 'rules\ecc\golang', 'skills\nestjs-patterns') {
+            New-Item -ItemType Directory -Force (Join-Path $h $d) | Out-Null
+        }
+        Set-Content (Join-Path $h 'agents\go-reviewer.md') 'y'
+        Invoke-Install $h -Flags @('-TrimOnly')
+        $LASTEXITCODE | Should Be 0
+        $trims = @(Get-ChildItem (Join-Path $h 'backups') -Filter 'ecc-trim-*')
+        $trims.Count | Should Be 2
+        foreach ($t in $trims) {
+            Test-Path (Join-Path $t.FullName 'rules\golang') | Should Be $true
+            Test-Path (Join-Path $t.FullName 'rules\golang\golang') | Should Be $false
+            Test-Path (Join-Path $t.FullName 'agents\go-reviewer.md') | Should Be $true
+        }
+        Test-Path (Join-Path $h 'skills\react-hooks') | Should Be $true
+        Test-Path (Join-Path $h 'rules\ecc\common') | Should Be $true
     }
 }

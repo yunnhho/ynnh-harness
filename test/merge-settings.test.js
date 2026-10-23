@@ -49,3 +49,15 @@ test('package settings.json is valid', () => {
   assert.ok(pkg.permissions.deny.includes('Read(./.env)'));
   assert.strictEqual(Object.keys(pkg.enabledPlugins).length, 13);
 });
+
+test('cli reads existing settings.json with UTF-8 BOM', () => {
+  const os = require('node:os');
+  const { execFileSync } = require('node:child_process');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'merge-bom-'));
+  const existing = path.join(dir, 'settings.json');
+  fs.writeFileSync(existing, '﻿{"theme":"dark"}');
+  execFileSync(process.execPath, [path.join(__dirname, '..', 'lib', 'merge-settings.js'),
+    existing, path.join(__dirname, '..', 'settings.json'), H, existing]);
+  assert.strictEqual(JSON.parse(fs.readFileSync(existing, 'utf8')).theme, 'dark');
+  fs.rmSync(dir, { recursive: true, force: true });
+});

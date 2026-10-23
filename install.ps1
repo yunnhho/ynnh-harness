@@ -1,13 +1,15 @@
 ﻿param(
     [string]$ClaudeHome = (Join-Path $HOME '.claude'),
     [switch]$DryRun,
-    [switch]$SkipEcc
+    [switch]$SkipEcc,
+    # Test hook: run only the ECC trim (no npx), then exit.
+    [switch]$TrimOnly
 )
 $ErrorActionPreference = 'Stop'
 $Pkg = $PSScriptRoot
 $Stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
-$EccTrim = Join-Path $ClaudeHome ('backups\ecc-trim-' + (Get-Date -Format 'yyyyMMdd'))
-$SeqThinking = '@modelcontextprotocol/server-sequential-thinking@2.0.0'
+$EccTrim = Join-Path $ClaudeHome "backups\ecc-trim-$Stamp"
+$SeqThinking = '@modelcontextprotocol/server-sequential-thinking@2026.8.31'
 $KeepRules = @('common', 'java', 'typescript', 'web', 'react', 'README.md')
 $KeepSkills = @('springboot-patterns', 'springboot-security', 'springboot-tdd', 'springboot-verification',
     'jpa-patterns', 'java-coding-standards', 'redis-patterns', 'mysql-patterns', 'postgres-patterns',
@@ -49,6 +51,20 @@ if (Test-Path (Join-Path $ClaudeHome 'rules\ecc\csharp')) {
     exit 1
 }
 
+$realHome = [IO.Path]::GetFullPath((Join-Path $HOME '.claude')).TrimEnd('')
+$target = [IO.Path]::GetFullPath($ClaudeHome).TrimEnd('')
+if (-not $SkipEcc -and -not $TrimOnly -and $target -ne $realHome) {
+    Write-Host "중단: npx ecc / claude mcp 는 항상 $realHome 을 바꾼다. 다른 -ClaudeHome 에는 -SkipEcc 를 같이 줘야 한다." -ForegroundColor Red
+    exit 1
+}
+
+function Invoke-EccTrim {
+    Move-Unkept (Join-Path $ClaudeHome 'rules\ecc') $KeepRules (Join-Path $EccTrim 'rules')
+    Move-Unkept (Join-Path $ClaudeHome 'skills') ($KeepSkills + 'react-*') (Join-Path $EccTrim 'skills')
+    Move-Unkept (Join-Path $ClaudeHome 'agents') $KeepAgents (Join-Path $EccTrim 'agents')
+}
+if ($TrimOnly) { Invoke-EccTrim; exit 0 }
+
 # 2. Backup
 $backup = Join-Path $ClaudeHome "backups\pre-harness-$Stamp"
 foreach ($n in 'CLAUDE.md', 'settings.json', 'rules', 'agents', 'hooks') {
@@ -66,11 +82,7 @@ if (-not $SkipEcc) {
         npx ecc-universal@2.2.3 install --profile developer --target claude --modules security,database,devops-infra --enable-hooks
         Assert-Exit 'ecc install'
     }
-    Step "trim ecc rules/skills/agents -> $EccTrim" {
-        Move-Unkept (Join-Path $ClaudeHome 'rules\ecc') $KeepRules (Join-Path $EccTrim 'rules')
-        Move-Unkept (Join-Path $ClaudeHome 'skills') ($KeepSkills + 'react-*') (Join-Path $EccTrim 'skills')
-        Move-Unkept (Join-Path $ClaudeHome 'agents') $KeepAgents (Join-Path $EccTrim 'agents')
-    }
+    Step "trim ecc rules/skills/agents -> $EccTrim" { Invoke-EccTrim }
 }
 
 # 4. Copy package files

@@ -2,11 +2,12 @@
 
 # ynnh-harness
 
-Claude Code 개인 설정 묶음. Java 17 / Spring Boot 3, TypeScript, React 기준이다.
+Claude Code 개인 설정 묶음. Java 21 / Spring Boot 3, TypeScript, React 기준이다.
 
 | 경로 | 내용 |
 |---|---|
 | `CLAUDE.md`, `rules/override.md` | 작업 크기별 역할 분담(ponytail / superpowers / ECC 에이전트), ECC 규칙 덮기 |
+| `rules/ecc-common/` | ECC 2.2.3 `rules/common` 일부의 수정본(낡은 모델·사고 예산 조언, 대문자 강조 제거). 설치 시 덮어쓴다 |
 | `settings.json` | 모델(opus), ECC hook 비활성 목록, 플러그인·마켓플레이스, permissions |
 | `agents/models.json` | ECC 에이전트별 모델과 스택 줄 (`lib/patch-agents.js`가 적용) |
 | `hooks/block-dangerous.js` | 위험 명령 차단 hook |

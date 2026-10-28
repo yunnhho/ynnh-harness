@@ -26,6 +26,18 @@ test('inserts stack line once', () => {
   assert.strictEqual(once, twice);
 });
 
+test('strips MUST BE USED triggers from description only', () => {
+  const src = '---\nname: a\ndescription: Reviewer. Use immediately after writing code. MUST BE USED for all changes.\n---\nMUST BE USED stays.';
+  const out = patchAgent(src, 'sonnet', 'S');
+  assert.match(out, /^description: Reviewer\.$/m);
+  assert.ok(out.endsWith('MUST BE USED stays.'));
+});
+
+test('strips Use PROACTIVELY trigger', () => {
+  const src = '---\nname: a\ndescription: Planner. Use PROACTIVELY when users request features. Plans work.\n---\nbody';
+  assert.match(patchAgent(src, 'opus', 'S'), /^description: Planner\. Plans work\.$/m);
+});
+
 test('preserves CRLF', () => {
   const out = patchAgent('---\r\nname: a\r\nmodel: x\r\n---\r\nbody', 'opus', 'S');
   assert.ok(!/[^\r]\n/.test(out));

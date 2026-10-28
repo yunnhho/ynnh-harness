@@ -11,9 +11,12 @@ const yes = [
   'Remove-Item -Recurse -Force C:\\', 'Remove-Item C:\\ -Recurse -Force',
   'Remove-Item -Recurse -Force ~', 'Remove-Item -Recurse -Force $HOME',
   'Format-Volume -DriveLetter D', 'Clear-Disk -Number 1',
+  'rm -rf /*', 'rm -rf ~/*', 'rm -rf C:/', 'rm -rf "$HOME"', 'rm -rf $HOME/*',
+  'Remove-Item -Recurse -Force C:\\*', 'git clean -fdx', 'git clean -d -f',
 ];
 const no = ['rm -rf ./build', 'git reset --soft HEAD~1',
-  'Remove-Item -Recurse -Force .\\dist', 'git status', ''];
+  'Remove-Item -Recurse -Force .\\dist', 'git status', '',
+  'rm -rf /tmp/x', 'rm -rf ~/proj/build', 'git clean -n'];
 
 for (const c of yes) test(`danger: ${c}`, () => assert.strictEqual(isDangerous(c), true));
 for (const c of no) test(`safe: "${c}"`, () => assert.strictEqual(isDangerous(c), false));

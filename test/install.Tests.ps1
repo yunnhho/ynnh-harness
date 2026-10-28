@@ -83,7 +83,7 @@ Describe 'install.ps1' {
         $h = New-Home 'files'
         Invoke-Install $h
         $LASTEXITCODE | Should Be 0
-        foreach ($f in 'CLAUDE.md', 'rules\override.md', 'rules\ecc\common\agents.md', 'hooks\block-dangerous.js') {
+        foreach ($f in 'CLAUDE.md', 'rules\override.md', 'rules\ecc\common\agents.md', 'rules\ecc\common\performance.md', 'hooks\block-dangerous.js') {
             Test-Path (Join-Path $h $f) | Should Be $true
         }
     }
@@ -112,7 +112,9 @@ Describe 'install.ps1' {
             New-Item -ItemType Directory -Force (Join-Path $h $d) | Out-Null
         }
         Set-Content (Join-Path $h 'agents\go-reviewer.md') 'x'
+        Set-Content (Join-Path $h 'rules\ecc\README.md') 'x'
         Invoke-Install $h -Flags @('-TrimOnly')
+        Test-Path (Join-Path $h 'rules\ecc\README.md') | Should Be $false
         $LASTEXITCODE | Should Be 0
         foreach ($d in 'rules\ecc\golang', 'skills\nestjs-patterns') {
             New-Item -ItemType Directory -Force (Join-Path $h $d) | Out-Null

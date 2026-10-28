@@ -1,8 +1,10 @@
 // PreToolUse(Bash) hook: 되돌릴 수 없는 명령 차단. exit 2 = 차단, 0 = 통과.
-const ROOT = String.raw`(?:\/|~\/?|\$HOME\/?|[A-Za-z]:\\?)(?=\s|$)`;
+// Root/home path, optionally quoted or globbed: /, /*, ~/*, "$HOME", C:\, C:/*
+const ROOT = String.raw`["']?(?:\/|~\/?|\$HOME\/?|[A-Za-z]:[\\\/]?)\*?["']?(?=\s|$)`;
 const DANGEROUS = new RegExp([
   String.raw`\brm\s+(?:-\S+\s+)*-\S*r\S*\s+(?:-\S+\s+)*${ROOT}`,
   String.raw`\bgit\s+reset\s+--hard\b`,
+  String.raw`\bgit\s+clean\s+(?:-\S+\s+)*-\S*f`,
   String.raw`\bdrop\s+(?:table|database)\b`,
   String.raw`\bRemove-Item\b(?=.*-Recurse)(?=.*\s${ROOT})`,
   String.raw`\b(?:Format-Volume|Clear-Disk)\b`,

@@ -53,3 +53,10 @@ test('agents.md maps every agent to its tier', () => {
 test('no shouting', () => {
   for (const f of FILES) assert.doesNotMatch(read(f), /\b(ALWAYS|MUST|NEVER|CRITICAL)\b/, f);
 });
+
+test('ecc-common copies do not fight override.md', () => {
+  // Severity labels (CRITICAL, HIGH) stay; shouting, auto-agent and 80% mandates go.
+  for (const f of fs.readdirSync(path.join(__dirname, '..', 'rules', 'ecc-common'))) {
+    assert.doesNotMatch(read(`rules/ecc-common/${f}`), /\b(MANDATORY|ALWAYS|MUST|NEVER|STOP|PROACTIVELY)\b|80%/, f);
+  }
+});

@@ -1,6 +1,6 @@
 # 전역 지침
 
-주 스택: Java 17 / Spring Boot 3, TypeScript, React. 스택·코드 스타일·빌드는 프로젝트 `CLAUDE.md`와 빌드 설정을 따르고, 작업 진행 방식(역할 분담)은 `rules/override.md`를 따른다.
+주 스택: Java 21 / Spring Boot 3, TypeScript, React. 스택·코드 스타일·빌드는 프로젝트 `CLAUDE.md`와 빌드 설정을 따르고, 작업 진행 방식(역할 분담)은 `rules/override.md`를 따른다.
 
 ## 진행
 - 내 입력이 필요 없는 단계는 계속 진행한다. 상태 메모는 다음 행동과 같은 메시지에 쓴다.

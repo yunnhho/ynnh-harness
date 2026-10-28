@@ -10,7 +10,7 @@ $Pkg = $PSScriptRoot
 $Stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
 $EccTrim = Join-Path $ClaudeHome "backups\ecc-trim-$Stamp"
 $SeqThinking = '@modelcontextprotocol/server-sequential-thinking@2026.8.31'
-$KeepRules = @('common', 'java', 'typescript', 'web', 'react', 'README.md')
+$KeepRules = @('common', 'java', 'typescript', 'web', 'react')
 $KeepSkills = @('springboot-patterns', 'springboot-security', 'springboot-tdd', 'springboot-verification',
     'jpa-patterns', 'java-coding-standards', 'redis-patterns', 'mysql-patterns', 'postgres-patterns',
     'docker-patterns', 'deployment-patterns', 'tdd-workflow', 'verification-loop', 'security-review',
@@ -101,6 +101,10 @@ $copies = [ordered]@{
     'rules\override.md'         = Join-Path $ClaudeHome 'rules\override.md'
     'rules\agents.md'           = Join-Path $ClaudeHome 'rules\ecc\common\agents.md'
     'hooks\block-dangerous.js'  = $hookPath
+}
+# Fixed copies of ECC 2.2.3 rules/common files (stock text minus dated model advice and shouting).
+foreach ($f in Get-ChildItem (Join-Path $Pkg 'rules\ecc-common') -Filter '*.md') {
+    $copies["rules\ecc-common\$($f.Name)"] = Join-Path $ClaudeHome "rules\ecc\common\$($f.Name)"
 }
 foreach ($k in $copies.Keys) {
     $src = Join-Path $Pkg $k

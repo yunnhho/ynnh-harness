@@ -18,7 +18,7 @@
 | haiku | code-explorer, doc-updater, refactor-cleaner |
 
 ## 위임 프롬프트
-다섯 줄을 준다. 스택과 버전(예: Java 17 / Spring Boot 3, MySQL)은 제약에 적는다.
+다섯 줄을 준다. 스택과 버전(예: Java 21 / Spring Boot 3, MySQL)은 제약에 적는다.
 ```
 [목적] 왜 필요한가
 [대상] 어디를 보는가
